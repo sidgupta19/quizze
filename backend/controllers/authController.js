@@ -55,7 +55,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   let decoded;
 
   try {
-    decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET_KEY);
+    decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   } catch (error) {
     return next(
       new AppError(
@@ -65,7 +65,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  const user = await User.findOne(decoded.id);
+  const user = await User.findOne({ _id: decoded.id });
 
   if (!user) {
     return next(new AppError('User not found', 400));
