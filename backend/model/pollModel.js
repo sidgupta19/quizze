@@ -8,6 +8,10 @@ const optionSchema = new mongoose.Schema({
   image: {
     type: String,
     validate: [validator.isURL, 'Enter a valid URL']
+  },
+  votes: {
+    type: Number,
+    default: 0
   }
 });
 
@@ -25,31 +29,13 @@ const questionSchema = new mongoose.Schema({
       message: 'Minimum two option required. Max is four.'
     },
     required: true
-  },
-  answer: {
-    type: Number,
-    required: true,
-    validate: {
-      validator: function(value) {
-        return value < this.options.length;
-      },
-      message: 'Answer index is out of range'
-    }
-  },
-  attempts: {
-    type: Number,
-    default: 0
-  },
-  corrects: {
-    type: Number,
-    default: 0
   }
 });
 
-const quizSchema = new mongoose.Schema({
+const pollSchema = new mongoose.Schema({
   category: {
     type: String,
-    default: 'Q&A'
+    default: 'Poll'
   },
   name: {
     type: String,
@@ -65,10 +51,6 @@ const quizSchema = new mongoose.Schema({
     },
     required: true
   },
-  timer: {
-    type: Number,
-    default: null
-  },
   createdAt: {
     type: Date,
     default: Date.now()
@@ -80,6 +62,6 @@ const quizSchema = new mongoose.Schema({
   createdBy: mongoose.ObjectId
 });
 
-const Quiz = mongoose.model('Quiz', quizSchema);
+const Poll = mongoose.model('Poll', pollSchema);
 
-module.exports = Quiz;
+module.exports = Poll;
