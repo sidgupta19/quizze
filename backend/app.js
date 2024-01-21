@@ -2,6 +2,7 @@ const express = require('express');
 const authRouter = require('./routes/authRoute');
 const quizRouter = require('./routes/quizRoute');
 const pollRouter = require('./routes/pollRoute');
+const userRouter = require('./routes/userRoute');
 const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
@@ -16,6 +17,7 @@ app.get('/api/v1/', (req, res) => {
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/quizzes', quizRouter);
 app.use('/api/v1/polls', pollRouter);
+app.use('/api/v1/users', userRouter);
 
 app.get('*', (req, res) => {
   res.sendStatus(404);

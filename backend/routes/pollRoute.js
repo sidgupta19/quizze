@@ -3,7 +3,8 @@ const {
   getPoll,
   addPoll,
   getUsersPolls,
-  updatePoll
+  updatePoll,
+  deletePoll
 } = require('../controllers/pollController');
 const { protect } = require('../controllers/authController');
 
@@ -17,6 +18,7 @@ router
 router
   .route('/:id')
   .get(getPoll)
-  .patch(updatePoll);
+  .patch(updatePoll)
+  .delete(deletePoll);
 
 module.exports = router;

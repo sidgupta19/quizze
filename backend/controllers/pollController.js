@@ -10,6 +10,9 @@ exports.getPoll = catchAsync(async (req, res, next) => {
     return next(new AppError('Poll not found', 404));
   }
 
+  poll.impressions += 1;
+  poll.save();
+
   res.status(200).json({
     satatus: 'success',
     data: { poll }
@@ -82,5 +85,18 @@ exports.updatePoll = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     data: { poll }
+  });
+});
+
+exports.deletePoll = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const poll = await Poll.findByIdAndDelete(id);
+
+  if (!poll) {
+    return next(new AppError('No poll found with this id', 404));
+  }
+
+  res.status(204).json({
+    status: 'success'
   });
 });
