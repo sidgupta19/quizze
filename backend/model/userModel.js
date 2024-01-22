@@ -9,7 +9,13 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    validate: {
+      validator: function(v) {
+        return /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v);
+      },
+      message: props => `${props.value} is not a valid email!`
+    }
   },
   password: {
     type: String,
@@ -22,7 +28,7 @@ const userSchema = new mongoose.Schema({
       validator: function(val) {
         return this.password === val;
       },
-      message: 'Password do no match'
+      message: 'Passwords do no match'
     }
   }
 });

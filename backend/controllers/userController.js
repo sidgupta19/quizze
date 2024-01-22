@@ -21,8 +21,8 @@ exports.getStats = catchAsync(async (req, res, next) => {
   const quizzes = await Quiz.find({ createdBy: req.user.id });
   const polls = await Poll.find({ createdBy: req.user.id });
 
-  const statsObj = {};
-  statsObj.totalQuizzesAndPolls = quizzes.length + polls.length;
+  const stats = {};
+  stats.totalQuizzesAndPolls = quizzes.length + polls.length;
 
   let totalQuizzesQuestions = 0;
   let totalPollsQuestions = 0;
@@ -35,7 +35,7 @@ exports.getStats = catchAsync(async (req, res, next) => {
     totalPollsQuestions += poll.questions.length;
   });
 
-  statsObj.totalQuestions = totalPollsQuestions + totalQuizzesQuestions;
+  stats.totalQuestions = totalPollsQuestions + totalQuizzesQuestions;
 
   let totalPollImpressions = 0;
   let totlaQuizImpressions = 0;
@@ -48,11 +48,11 @@ exports.getStats = catchAsync(async (req, res, next) => {
     totalPollImpressions += poll.impressions;
   });
 
-  statsObj.totalImpressions = totalPollImpressions + totlaQuizImpressions;
+  stats.totalImpressions = totalPollImpressions + totlaQuizImpressions;
 
   res.status(200).json({
     status: 'success',
-    data: statsObj
+    data: { stats }
   });
 });
 
