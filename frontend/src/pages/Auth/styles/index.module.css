@@ -1,0 +1,59 @@
+.container {
+  background-color: var(--neutral-color);
+  padding: 1rem;
+  margin: 2rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.tab:focus {
+  outline: none;
+}
+
+.container > div {
+  margin-bottom: 2rem;
+}
+
+.image {
+  text-align: center;
+  height: 2rem;
+}
+
+.image img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+@media (min-width: 768px) {
+  .container {
+    margin: 4rem;
+  }
+
+  .image {
+    height: 3rem;
+  }
+
+  .form {
+    max-width: 80%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    margin: 4rem 6rem;
+  }
+
+  .form {
+    max-width: 50%;
+  }
+
+  .form > div {
+    gap: 2rem;
+  }
+}

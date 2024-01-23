@@ -4,8 +4,12 @@
   font-weight: 400;
 
   --primary-color: #60b84b;
-  --secondary-color: #a9bcff;
+  --secondary: #a9bcff;
+  --secondary-focus: #9db2fe;
+  --secondary-content: #011a75;
   --base-color: #f2f2f2;
+  --neutral-color: #ffffff;
+  --error: #ff3636;
 
   background-color: var(--base-color);
 
