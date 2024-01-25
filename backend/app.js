@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const authRouter = require('./routes/authRoute');
 const quizRouter = require('./routes/quizRoute');
 const pollRouter = require('./routes/pollRoute');
@@ -7,6 +8,7 @@ const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/api/v1/', (req, res) => {

@@ -4,10 +4,21 @@ import { Button } from '../../components/ui';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 import styles from './styles/index.module.css';
+import { Toaster } from 'react-hot-toast';
 
 export default function Auth() {
   return (
     <div className={styles.container}>
+      <Toaster
+        position="bottom-right"
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            background: '#fff',
+            color: 'black',
+          },
+        }}
+      />
       <div className={styles.image}>
         <img src={logo} alt="logo" />
       </div>

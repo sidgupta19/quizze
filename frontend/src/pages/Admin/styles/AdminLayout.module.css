@@ -1,0 +1,12 @@
+.main {
+  display: flex;
+}
+
+.navigation {
+  height: 100vh;
+}
+
+.outlet {
+  flex: 1;
+  padding: 3rem;
+}

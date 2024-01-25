@@ -27,15 +27,18 @@ exports.login = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    token: token
+    data: { token }
   });
 });
 
 exports.register = catchAsync(async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
-  const user = new User({ name, email, password, confirmPassword });
-
-  await user.save();
+  const user = await User.create({
+    name,
+    email,
+    password,
+    confirmPassword
+  });
 
   res.status(200).send({
     message: 'Success',

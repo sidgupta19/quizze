@@ -5,8 +5,8 @@ const router = express.Router();
 
 router.get('/', (req, res) => res.sendStatus(403));
 
-router.get('/login', login);
+router.post('/login', login);
 
-router.get('/register', register);
+router.post('/register', register);
 
 module.exports = router;

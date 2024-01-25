@@ -1,4 +1,4 @@
-require('dotenv').config();
+const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const app = require('./app');
 
@@ -8,6 +8,8 @@ process.on('uncaughtException', err => {
 
   process.exit(1);
 });
+
+dotenv.config({ path: './dotenv.config' });
 
 async function main() {
   await mongoose.connect(process.env.MONGODB_URI, {

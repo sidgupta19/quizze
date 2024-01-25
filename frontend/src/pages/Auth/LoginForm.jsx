@@ -2,7 +2,9 @@ import { Button, Input } from '../../components/ui';
 import styles from './styles/LoginForm.module.css';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 
 const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
@@ -12,21 +14,48 @@ const userSchema = yup
       .string()
       .matches(emailRegex, { message: 'Email is not valid' })
       .required(),
-    password: yup.string().min(6).required(),
+    password: yup.string().required(),
   })
   .required();
 
 export default function LoginForm() {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
     resolver: yupResolver(userSchema),
   });
 
-  const onSubmit = (data) => {
-    alert(JSON.stringify(data));
+  const onSubmit = async (data) => {
+    try {
+      const res = await fetch(import.meta.env.VITE_BACKEND_URL + 'auth/login', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json();
+        throw new Error(errJson.message);
+      }
+
+      const resJson = await res.json();
+      console.log(resJson);
+      localStorage.setItem('userToken', resJson.data.token);
+      navigate('/admin');
+    } catch (error) {
+      toast.error(error.message);
+      console.error(error.message);
+    }
   };
 
   return (

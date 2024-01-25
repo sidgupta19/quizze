@@ -35,7 +35,7 @@ const questionSchema = new mongoose.Schema({
 const pollSchema = new mongoose.Schema({
   category: {
     type: String,
-    default: 'Poll'
+    default: 'poll'
   },
   name: {
     type: String,

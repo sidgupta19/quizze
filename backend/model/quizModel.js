@@ -49,7 +49,7 @@ const questionSchema = new mongoose.Schema({
 const quizSchema = new mongoose.Schema({
   category: {
     type: String,
-    default: 'Q&A'
+    default: 'quiz'
   },
   name: {
     type: String,
