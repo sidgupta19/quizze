@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { Button, Input } from '../../components/ui';
+import { Button, FormInput } from '../../components/ui';
 import styles from './styles/SignupForm.module.css';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
@@ -87,26 +87,26 @@ export default function SignupForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      <Input
+      <FormInput
         error={errors.name}
         field="name"
         label="Name"
         register={register}
       />
-      <Input
+      <FormInput
         error={errors.email}
         field="email"
         label="Email"
         register={register}
       />
-      <Input
+      <FormInput
         error={errors.password}
         field="password"
         label="Password"
         register={register}
         type="password"
       />
-      <Input
+      <FormInput
         error={errors.confirmPassword}
         field="confirmPassword"
         label="Confirm Password"

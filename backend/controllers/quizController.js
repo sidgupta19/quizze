@@ -45,10 +45,15 @@ exports.getUserQuizzes = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateQuiz = catchAsync(async (req, res, next) => {
+exports.attemptQuiz = catchAsync(async (req, res, next) => {
   const { results } = req.body;
-  const { id } = req.params;
+  let corrects = 0;
 
+  if (!results) {
+    return next(new AppError('Please provide results'));
+  }
+
+  const { id } = req.params;
   const quiz = await Quiz.findById(id);
 
   if (!quiz) {
@@ -56,26 +61,32 @@ exports.updateQuiz = catchAsync(async (req, res, next) => {
   }
 
   results.forEach(el => {
-    if (el.isAttempted) {
-      // eslint-disable-next-line eqeqeq
-      const question = quiz.questions.find(q => q._id == el.id);
+    // eslint-disable-next-line eqeqeq
+    const question = quiz.questions.find(q => q._id == el.questionId);
 
-      if (!question) {
-        return next(new AppError('Question is not present', 400));
-      }
+    if (!question) {
+      return next(new AppError(`Question not found`));
+    }
 
-      question.attempts += 1;
-      if (el.isCorrect) {
-        question.corrects += 1;
-      }
+    question.attempts += 1;
+
+    // eslint-disable-next-line eqeqeq
+    if (el.selectedOption == question.answer) {
+      corrects += 1;
+      question.corrects += 1;
     }
   });
 
   await quiz.save();
 
+  const userResults = {
+    totalQuestions: quiz.questions.length,
+    corrects
+  };
+
   res.status(200).json({
     status: 'success',
-    date: { quiz }
+    data: { userResults }
   });
 });
 

@@ -1,4 +1,4 @@
-import { Button, Input } from '../../components/ui';
+import { Button, FormInput } from '../../components/ui';
 import styles from './styles/LoginForm.module.css';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -60,13 +60,13 @@ export default function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      <Input
+      <FormInput
         error={errors.email}
         field="email"
         label="Email"
         register={register}
       />
-      <Input
+      <FormInput
         error={errors.password}
         field="password"
         label="Password"

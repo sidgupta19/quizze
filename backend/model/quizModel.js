@@ -28,13 +28,7 @@ const questionSchema = new mongoose.Schema({
   },
   answer: {
     type: Number,
-    required: true,
-    validate: {
-      validator: function(value) {
-        return value < this.options.length;
-      },
-      message: 'Answer index is out of range'
-    }
+    required: true
   },
   attempts: {
     type: Number,

@@ -1,0 +1,36 @@
+.optionsTypeGroup {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.optionsType {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.optionsType > div {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.group {
+  display: flex;
+  gap: 3rem;
+  align-items: flex-end;
+  margin-top: 2rem;
+}
+
+.actions {
+  margin-top: 3rem;
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+}
+
+.actions button {
+  flex: 1;
+}

@@ -1,19 +1,17 @@
 import styles from './styles/Input.module.css';
 
-const Input = ({ label, type, register, required, field, error }) => {
+export default function Input({ type, placeholder, value, onChange }) {
   return (
     <div className={styles.inputDiv}>
-      <label>{label}</label>
       <div className={styles.group}>
         <input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
           type={type}
           className={styles.input}
-          {...register(field, { required })}
         />
-        <p className={styles.error}>{error?.message}</p>
       </div>
     </div>
   );
-};
-
-export default Input;
+}

@@ -4,8 +4,10 @@ import Auth from './pages/Auth';
 import Home from './pages/Admin/Home';
 import Analytics from './pages/Admin/Analytics';
 import CreatePage from './pages/Admin/CreatePage';
-import Poll from './pages/Poll';
-import Quiz from './pages/Quiz';
+import Poll from './pages/User/Poll';
+import Quiz from './pages/User/Quiz';
+import UserLayout from './pages/User';
+import Results from './pages/User/Results';
 
 const router = createBrowserRouter([
   {
@@ -25,12 +27,22 @@ const router = createBrowserRouter([
         element: <Auth />,
       },
       {
-        path: 'poll',
-        element: <Poll />,
-      },
-      {
-        path: 'quiz',
-        element: <Quiz />,
+        path: 'user',
+        element: <UserLayout />,
+        children: [
+          {
+            path: 'results',
+            element: <Results />,
+          },
+          {
+            path: 'poll/:pollId',
+            element: <Poll />,
+          },
+          {
+            path: 'quiz/:quizId',
+            element: <Quiz />,
+          },
+        ],
       },
     ],
   },

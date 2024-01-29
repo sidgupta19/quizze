@@ -21,6 +21,14 @@
 
 .primary {
   background-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 4px 14px 0 rgba(50, 132, 35, 0.361);
+}
+
+.primary:hover {
+  background-color: var(--primary-focus);
+  color: white;
+  box-shadow: 0 4px 14px 0 rgba(50, 132, 35, 0.361);
 }
 
 .secondary {
@@ -30,6 +38,15 @@
 
 .secondary:hover {
   background-color: var(--secondary-focus);
+}
+
+.error {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.error:hover {
+  background-color: var(--error-color);
 }
 
 .ghost {

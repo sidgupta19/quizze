@@ -5,11 +5,13 @@ export default function Button({
   type = 'submit',
   style,
   variant,
+  onClick,
 }) {
   const buttonVariant = variant ? styles[variant] : '';
 
   return (
     <button
+      onClick={onClick}
       style={{ ...style }}
       className={`${styles.button} ${buttonVariant}`}
       type={type}
