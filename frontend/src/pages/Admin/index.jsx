@@ -1,9 +1,21 @@
-import { Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import styles from './styles/index.module.css';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Naviagtion from './Naviagtion';
+import styles from './styles/index.module.css';
+import { useContext, useEffect } from 'react';
+import { AuthContext } from '../../store/authContext';
 
 export default function AdminLayout() {
+  const { user, isLoading } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user && !isLoading) {
+      console.log('navigate');
+      navigate('/auth');
+    }
+  }, [user, navigate, isLoading]);
+
   return (
     <>
       <Toaster
@@ -16,14 +28,18 @@ export default function AdminLayout() {
           },
         }}
       />
-      <div className={styles.main}>
-        <div className={styles.navigation}>
-          <Naviagtion />
+      {isLoading ? (
+        <h1>Loading...</h1>
+      ) : (
+        <div className={styles.main}>
+          <div className={styles.navigation}>
+            <Naviagtion />
+          </div>
+          <div className={styles.outlet}>
+            <Outlet />
+          </div>
         </div>
-        <div className={styles.outlet}>
-          <Outlet />
-        </div>
-      </div>
+      )}
     </>
   );
 }

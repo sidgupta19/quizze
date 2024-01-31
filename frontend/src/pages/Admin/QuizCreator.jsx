@@ -1,16 +1,18 @@
 import { Tab } from '@headlessui/react';
 import { Plus, X } from 'lucide-react';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import { useImmer } from 'use-immer';
 import { v4 as uuid } from 'uuid';
 import { Button } from '../../components/ui';
+import { AuthContext } from '../../store/authContext';
+import { ModalContext } from './Naviagtion';
 import Options from './Options';
 import QuestionCreator from './QuestionCreator';
 import Timer from './Timer';
 import styles from './styles/QuizCreator.module.css';
-import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { ModalContext } from './Naviagtion';
+import copyLink from '../../utils/copyLink';
 
 const defaultQuiz = (name, type, actions, defaultData) => {
   console.log('defaultData:', defaultData);
@@ -40,16 +42,18 @@ export default function QuizCreator({
   quizType,
   defaultData,
   actions,
+  toggleEditModal,
 }) {
   const [quiz, setQuiz] = useImmer(() =>
     defaultQuiz(quizName, quizType, actions, defaultData)
   );
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
-  const { toggleModal } = useContext(ModalContext);
-
-  useEffect(() => {
-    console.log(quiz);
-  }, [quiz]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [createdQuiz, setCreatedQuiz] = useState(null);
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { isOpen, toggleModal } = useContext(ModalContext);
 
   const getQuestion = (state, id) => {
     const question = state.questions.find((question) => question._id == id);
@@ -166,12 +170,11 @@ export default function QuizCreator({
     });
   };
 
-  const navigate = useNavigate();
-
   const createOrUpdateQuiz = useCallback(async () => {
+    setIsProcessing(true);
     let updatedQuiz = { ...quiz };
 
-    // remove _id property from default quiz when creating a new quiz
+    // remove _id property from default quiz questions when creating a new quiz
     if (actions !== 'update') {
       const updatedQuestions = quiz.questions.map((el) => ({
         question: el.question || '',
@@ -184,13 +187,6 @@ export default function QuizCreator({
     }
 
     const resource = quiz.category === 'quiz' ? 'quizzes/' : 'polls/';
-    const accessToken = localStorage.getItem('userToken');
-    console.log(accessToken);
-
-    if (!accessToken) {
-      return navigate('/auth');
-    }
-
     let url = import.meta.env.VITE_BACKEND_URL + resource;
 
     if (actions === 'update') {
@@ -200,11 +196,15 @@ export default function QuizCreator({
     }
 
     try {
+      if (!user) {
+        throw new Error('User not found');
+      }
+
       const res = await fetch(url, {
         method: actions === 'update' ? 'PATCH' : 'POST',
         body: JSON.stringify(updatedQuiz),
         headers: {
-          Authorization: 'Bearer ' + accessToken,
+          Authorization: 'Bearer ' + user,
           'Content-Type': 'application/json',
         },
       });
@@ -217,80 +217,128 @@ export default function QuizCreator({
         throw new Error(errJSON.message);
       }
 
+      if (actions !== 'update') {
+        const resJson = await res.json();
+        setCreatedQuiz(resJson.data.quiz);
+      }
+
       console.log('success');
       toast.success('Successfully created quiz');
     } catch (error) {
       console.log(error);
       toast.error(error.message);
+    } finally {
+      setIsProcessing(false);
+
+      if (actions == 'update') {
+        toggleEditModal();
+        navigate(0);
+      } else {
+        setShowResult(true);
+      }
     }
-  }, [quiz, navigate, actions]);
+  }, [quiz, user, actions, navigate, toggleEditModal]);
+
+  const getLink = (id, type) => {
+    const url = new URL(window.location.href);
+    url.pathname = '';
+    const modifiedUrl = url.href;
+    return `${modifiedUrl}user/${type}/${id}`;
+  };
 
   return (
     <div>
-      <Tab.Group
-        selectedIndex={selectedTabIndex}
-        onChange={setSelectedTabIndex}
-      >
-        <Tab.List className={styles.list}>
-          <div className={styles.tabs}>
-            {quiz.questions.map((q, index) => (
-              <Tab as="div" key={q._id}>
-                {({ selected }) => (
-                  <div className={selected ? styles.selectedTab : styles.tab}>
-                    {actions !== 'update' && index >= 1 && (
-                      <button
-                        onClick={() => deleteQuestion(q._id, index)}
-                        className={styles.cross}
+      {showResult && createdQuiz ? (
+        <div className={styles.results}>
+          <h1>
+            Congrats your {quizType === 'quiz' ? 'quiz' : 'poll'} is published.
+          </h1>
+          <p>{getLink(createdQuiz._id, quizType)}</p>
+
+          <Button
+            onClick={() => copyLink(createdQuiz._id, quizType)}
+            variant="primary"
+          >
+            Share quiz
+          </Button>
+        </div>
+      ) : (
+        <>
+          <Tab.Group
+            selectedIndex={selectedTabIndex}
+            onChange={setSelectedTabIndex}
+          >
+            <Tab.List className={styles.list}>
+              <div className={styles.tabs}>
+                {quiz.questions.map((q, index) => (
+                  <Tab as="div" key={q._id}>
+                    {({ selected }) => (
+                      <div
+                        className={selected ? styles.selectedTab : styles.tab}
                       >
-                        <X size={16} />
-                      </button>
+                        {actions !== 'update' && index >= 1 && (
+                          <button
+                            onClick={() => deleteQuestion(q._id, index)}
+                            className={styles.cross}
+                          >
+                            <X size={16} />
+                          </button>
+                        )}
+                        {index + 1}
+                      </div>
                     )}
-                    {index + 1}
-                  </div>
-                )}
-              </Tab>
-            ))}
+                  </Tab>
+                ))}
 
-            {actions !== 'update' && quiz.questions.length < 5 && (
-              <button onClick={addQuestion} className={styles.addButton}>
-                <Plus />
-              </button>
-            )}
+                {actions !== 'update' && quiz.questions.length < 5 && (
+                  <button onClick={addQuestion} className={styles.addButton}>
+                    <Plus />
+                  </button>
+                )}
+              </div>
+              <p>Max 5 questions</p>
+            </Tab.List>
+            <Tab.Panels>
+              {quiz.questions.map((q) => (
+                <Tab.Panel key={q.id}>
+                  <QuestionCreator
+                    question={q}
+                    handleQuestionChange={handleQuestionChange}
+                    quizType={quizType}
+                    handleOptionsTypeChange={handleOptionsTypeChange}
+                  >
+                    <Options
+                      actions={actions}
+                      question={q}
+                      deleteOption={deleteOption}
+                      addOption={addOption}
+                      handleAnswerChange={handleAnswerChange}
+                      handleOptionChange={handleOptionChange}
+                    />
+                    {quizType !== 'poll' && (
+                      <Timer quiz={quiz} setTimer={setTimer} />
+                    )}
+                  </QuestionCreator>
+                </Tab.Panel>
+              ))}
+            </Tab.Panels>
+          </Tab.Group>
+
+          <div className={styles.actions}>
+            <Button onClick={toggleModal}>Cancel</Button>
+            <Button variant="primary" onClick={createOrUpdateQuiz}>
+              {actions === 'update'
+                ? isProcessing
+                  ? 'Updating..'
+                  : 'Update'
+                : isProcessing
+                ? 'Creating'
+                : 'Create'}{' '}
+              quiz
+            </Button>
           </div>
-          <p>Max 5 questions</p>
-        </Tab.List>
-        <Tab.Panels>
-          {quiz.questions.map((q) => (
-            <Tab.Panel key={q.id}>
-              <QuestionCreator
-                question={q}
-                handleQuestionChange={handleQuestionChange}
-                quizType={quizType}
-                handleOptionsTypeChange={handleOptionsTypeChange}
-              >
-                <Options
-                  actions={actions}
-                  question={q}
-                  deleteOption={deleteOption}
-                  addOption={addOption}
-                  handleAnswerChange={handleAnswerChange}
-                  handleOptionChange={handleOptionChange}
-                />
-                {quizType !== 'poll' && (
-                  <Timer quiz={quiz} setTimer={setTimer} />
-                )}
-              </QuestionCreator>
-            </Tab.Panel>
-          ))}
-        </Tab.Panels>
-      </Tab.Group>
-
-      <div className={styles.actions}>
-        <Button onClick={toggleModal}>Cancel</Button>
-        <Button variant="primary" onClick={createOrUpdateQuiz}>
-          {actions === 'update' ? 'Update' : 'Create'} quiz
-        </Button>
-      </div>
+        </>
+      )}
     </div>
   );
 }

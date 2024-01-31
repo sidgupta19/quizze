@@ -1,31 +1,37 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import formatDate from '../../../utils/formatDate';
 import styles from './styles/index.module.css';
 import { Icon } from '@iconify/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Modal from '../../../components/ui/Modal';
 import { Button } from '../../../components/ui';
 import useModal from '../../../hooks/useModal';
 import toast from 'react-hot-toast';
 import QuizCreator from '../QuizCreator';
+import { AuthContext } from '../../../store/authContext';
+import copyLink from '../../../utils/copyLink';
 
 export default function Analytics() {
   const [quizzes, setQuizzes] = useState([]);
+
   const { isOpen: delteIsOpen, toggleModal: toggleDeletModal } = useModal();
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const { isOpen: editIsOpen, toggleModal: toggleEditModal } = useModal();
 
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+
   const fetchQuizes = useCallback(async () => {
+    if (!user) {
+      throw new Error('Access token not found');
+    }
+
     try {
-      const accessToken = localStorage.getItem('userToken');
-
-      if (!accessToken) {
-        throw new Error('Access token not found');
-      }
-
       const res = await fetch(
         import.meta.env.VITE_BACKEND_URL + 'users/pollsAndQuizzes',
         {
-          headers: { Authorization: 'Bearer ' + accessToken },
+          headers: { Authorization: 'Bearer ' + user },
         }
       );
 
@@ -38,23 +44,26 @@ export default function Analytics() {
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchQuizes().then((data) => setQuizzes(data.data.docs));
   }, [fetchQuizes]);
 
   const [quizToDelete, setQuizToDelete] = useState(null);
-
   const handleDelete = (quiz) => {
     toggleDeletModal();
     setQuizToDelete(quiz);
   };
 
   const confirmDelete = async () => {
-    console.log(quizToDelete);
     const category = quizToDelete.category === 'quiz' ? 'quizzes/' : 'polls/';
-    const accessToken = localStorage.getItem('userToken');
+
+    if (!user) {
+      throw new Error('Access token not found');
+    }
+
+    setIsDeleting(true);
 
     try {
       const res = await fetch(
@@ -62,7 +71,7 @@ export default function Analytics() {
         {
           method: 'DELETE',
           headers: {
-            Authorization: 'Bearer ' + accessToken,
+            Authorization: 'Bearer ' + user,
           },
         }
       );
@@ -76,16 +85,15 @@ export default function Analytics() {
     } catch (error) {
       console.log(error.message);
       toast.error(error.message);
+    } finally {
+      setQuizToDelete(null);
+      setIsDeleting(false);
+      toggleDeletModal();
+      navigate(0);
     }
   };
 
-  useEffect(() => {
-    if (quizToDelete && !delteIsOpen) {
-      setQuizToDelete(null);
-    }
-  }, [delteIsOpen]);
-
-  const [quizToUpdate, setQuizToUpdate] = useState({});
+  const [quizToUpdate, setQuizToUpdate] = useState(null);
 
   const handleUpdate = (el) => {
     setQuizToUpdate(el);
@@ -121,10 +129,13 @@ export default function Analytics() {
                 onClick={() => handleDelete(el)}
                 icon="mingcute:delete-2-line"
               />
-              <Icon icon="mingcute:share-2-line" />
+              <Icon
+                onClick={() => copyLink(el._id, el.category)}
+                icon="mingcute:share-2-line"
+              />
             </td>
             <td>
-              <Link to={`/admin/${el.category}/${el._id}`}>
+              <Link to={`/${el.category}/${el._id}`}>
                 Question with analysis
               </Link>
             </td>
@@ -138,7 +149,7 @@ export default function Analytics() {
             <h2>Are you confirm you want to delete?</h2>
             <div className={styles.actions}>
               <Button variant="error" onClick={confirmDelete}>
-                Confirm Delete
+                {isDeleting ? 'Deleting...' : 'Confirm Delete'}
               </Button>
               <Button onClick={toggleDeletModal}>Cancel</Button>
             </div>
@@ -149,9 +160,11 @@ export default function Analytics() {
       {editIsOpen && (
         <Modal toggleModal={toggleEditModal}>
           <QuizCreator
+            editIsOpen={editIsOpen}
             quizType={quizToUpdate.category}
             defaultData={quizToUpdate}
             actions="update"
+            toggleEditModal={toggleEditModal}
           />
         </Modal>
       )}

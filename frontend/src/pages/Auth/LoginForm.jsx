@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../../store/authContext';
 
 const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
@@ -20,6 +22,7 @@ const userSchema = yup
 
 export default function LoginForm() {
   const navigate = useNavigate();
+  const authCtx = useContext(AuthContext);
 
   const {
     register,
@@ -49,9 +52,8 @@ export default function LoginForm() {
       }
 
       const resJson = await res.json();
-      console.log(resJson);
-      localStorage.setItem('userToken', resJson.data.token);
-      navigate('/admin');
+      authCtx.saveUser(resJson.data.token);
+      navigate('/');
     } catch (error) {
       toast.error(error.message);
       console.error(error.message);

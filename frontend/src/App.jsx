@@ -10,14 +10,20 @@ import QuizResults from './pages/User/Quiz/QuizResults';
 import PollResults from './pages/User/Poll/PollResults';
 import QuizAnalysis from './pages/Admin/QuizAnalysis';
 import PollAnalysis from './pages/Admin/PollAnalysis';
+import AuthProvider from './store/authContext';
 
 const router = createBrowserRouter([
   {
     path: '/',
     children: [
       {
-        path: 'admin',
-        element: <AdminLayout />,
+        path: '',
+
+        element: (
+          <AuthProvider>
+            <AdminLayout />
+          </AuthProvider>
+        ),
         children: [
           { index: true, element: <Dashboard /> },
           { path: 'analytics', element: <Analytics /> },
@@ -27,7 +33,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'auth',
-        element: <Auth />,
+        element: (
+          <AuthProvider>
+            <Auth />
+          </AuthProvider>
+        ),
       },
       {
         path: 'user',

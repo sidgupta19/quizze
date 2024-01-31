@@ -1,22 +1,26 @@
-import { useCallback, useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
-import toast from 'react-hot-toast';
-import styles from './styles/Trendings.module.css';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../../store/authContext';
+import copyLink from '../../../utils/copyLink';
 import formatDate from '../../../utils/formatDate';
+import styles from './styles/Trendings.module.css';
 
 export default function Trendings() {
   const [list, setList] = useState([]);
+  const { user } = useContext(AuthContext);
 
   const fetchList = useCallback(async () => {
-    const accessToken = localStorage.getItem('userToken');
-
     try {
+      if (!user) {
+        throw new Error('User not found');
+      }
+
       const res = await fetch(
         import.meta.env.VITE_BACKEND_URL + 'users/trendings',
         {
           method: 'GET',
           headers: {
-            Authorization: 'Bearer ' + accessToken,
+            Authorization: 'Bearer ' + user,
           },
         }
       );
@@ -30,47 +34,39 @@ export default function Trendings() {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchList().then((data) => setList(data.data.docs));
   }, [fetchList]);
 
-  const copyLink = (id, type) => {
-    const url = new URL(window.location.href);
-    url.pathname = '';
-
-    // Get the modified URL
-    const modifiedUrl = url.href;
-    navigator.clipboard.writeText(`${modifiedUrl}user/${type}/${id}`);
-    toast.success('URL copied to clipboard');
-  };
-
   return (
     <div className={styles.container}>
       <h2>Trending Quizzes</h2>
 
-      <div className={styles.quizCards}>
-        {list?.map((el) => (
-          <div
-            type="button"
-            onClick={() => copyLink(el._id, el.category)}
-            key={el._id}
-            className={styles.card}
-          >
-            <div>
-              <p className={styles.name}>{el.name}</p>
-              <div className={styles.impressions}>
-                <p>{el.impressions}</p>
-                <Icon style={{ fontSize: '1.5rem' }} icon="iconoir:eye" />
+      {list && (
+        <div className={styles.quizCards}>
+          {list.map((el) => (
+            <div
+              type="button"
+              onClick={() => copyLink(el._id, el.category)}
+              key={el._id}
+              className={styles.card}
+            >
+              <div>
+                <p className={styles.name}>{el.name}</p>
+                <div className={styles.impressions}>
+                  <p>{el.impressions}</p>
+                  <Icon style={{ fontSize: '1.5rem' }} icon="iconoir:eye" />
+                </div>
               </div>
+              <p className={styles.date}>
+                Created on: {formatDate(el.createdAt)}
+              </p>
             </div>
-            <p className={styles.date}>
-              Created on: {formatDate(el.createdAt)}
-            </p>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

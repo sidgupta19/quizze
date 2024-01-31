@@ -1,23 +1,24 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../../store/authContext';
 import StatsCard from '../StatsCard';
 import Trendings from './Trendings';
 import styles from './styles/index.module.css';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({});
+  const { user } = useContext(AuthContext);
 
   const fetchStats = useCallback(async () => {
     try {
-      const accessToken = localStorage.getItem('userToken');
-      if (!accessToken) {
-        throw new Error('Access token not available');
+      if (!user) {
+        throw new Error('User not found');
       }
 
       const res = await fetch(
         import.meta.env.VITE_BACKEND_URL + 'users/stats',
         {
           headers: {
-            Authorization: 'Bearer ' + accessToken,
+            Authorization: 'Bearer ' + user,
           },
         }
       );
@@ -32,7 +33,7 @@ export default function Dashboard() {
     } catch (error) {
       console.error(error.message);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchStats().then((data) => setStats(data.data.stats));
