@@ -53,7 +53,7 @@ export default function QuizCreator({
   const [createdQuiz, setCreatedQuiz] = useState(null);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { isOpen, toggleModal } = useContext(ModalContext);
+  const { toggleModal } = useContext(ModalContext);
 
   const getQuestion = (state, id) => {
     const question = state.questions.find((question) => question._id == id);
