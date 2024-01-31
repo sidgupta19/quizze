@@ -11,9 +11,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/api/v1/', (req, res) => {
-  res.status(200);
-  res.send('Welcome to the quizze server! 🚀');
+app.get('/', (req, res) => {
+  res.status(200).json('Welcome to the quizze server! 🚀');
 });
 
 app.use('/api/v1/auth', authRouter);
