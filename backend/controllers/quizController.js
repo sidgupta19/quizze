@@ -45,6 +45,28 @@ exports.getUserQuizzes = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.deleteQuiz = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const quiz = await Quiz.findOneAndDelete({
+    _id: id,
+    createdBy: req.user._id
+  });
+
+  if (!quiz) {
+    return next(
+      new AppError(
+        "No quiz found with this id, or you don't have permission to delete it.",
+        404
+      )
+    );
+  }
+
+  res.status(204).json({
+    status: 'success'
+  });
+});
+
 exports.attemptQuiz = catchAsync(async (req, res, next) => {
   const { results } = req.body;
   let corrects = 0;
@@ -52,6 +74,8 @@ exports.attemptQuiz = catchAsync(async (req, res, next) => {
   if (!results) {
     return next(new AppError('Please provide results'));
   }
+
+  console.log(results);
 
   const { id } = req.params;
   const quiz = await Quiz.findById(id);
@@ -65,7 +89,7 @@ exports.attemptQuiz = catchAsync(async (req, res, next) => {
     const question = quiz.questions.find(q => q._id == el.questionId);
 
     if (!question) {
-      return next(new AppError(`Question not found`));
+      return next(new AppError(`Question not found`, 400));
     }
 
     question.attempts += 1;
@@ -90,15 +114,27 @@ exports.attemptQuiz = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteQuiz = catchAsync(async (req, res, next) => {
+exports.updateQuiz = catchAsync(async (req, res, next) => {
+  const { name, questions, timer } = req.body;
   const { id } = req.params;
-  const quiz = await Quiz.findByIdAndDelete(id);
+
+  const quiz = await Quiz.findOneAndUpdate(
+    {
+      _id: id,
+      createdBy: req.user._id
+    },
+    { name, questions, timer },
+    { new: true }
+  );
 
   if (!quiz) {
-    return next(new AppError('No quiz found with this id', 404));
+    return next(
+      new AppError("Quiz not found, or you dont't have permission to edit it")
+    );
   }
 
-  res.status(204).json({
-    status: 'success'
+  res.status(200).json({
+    status: 'success',
+    message: { quiz }
   });
 });

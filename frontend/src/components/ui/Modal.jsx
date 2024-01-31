@@ -1,12 +1,11 @@
 import styles from './styles/Modal.module.css';
 
-export default function Modal({ children, setIsOpen }) {
+export default function Modal({ children, toggleModal }) {
+  // const { toggleModal } = useContext(ModalContext);
+
   return (
     <div className={styles.container}>
-      <div
-        onClick={() => setIsOpen((prev) => !prev)}
-        className={styles.backdrop}
-      />
+      <div onClick={toggleModal} className={styles.backdrop} />
       <div className={styles.content}>{children}</div>
     </div>
   );

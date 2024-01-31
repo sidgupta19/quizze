@@ -3,9 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useImmer } from 'use-immer';
 
 import { Button } from '../../../components/ui';
-import Question from './Question';
+import Question from '../Question';
 import styles from './styles/index.module.css';
-import Timer from './Timer';
+import Timer from '../Timer';
 
 export default function Quiz() {
   const { quizId } = useParams();
@@ -51,7 +51,7 @@ export default function Quiz() {
     async (results) => {
       try {
         const res = await fetch(
-          import.meta.env.VITE_BACKEND_URL + 'quizzes/' + quizId,
+          import.meta.env.VITE_BACKEND_URL + 'quizzes/attempt/' + quizId,
           {
             method: 'PATCH',
             body: JSON.stringify({ results }),
@@ -81,7 +81,7 @@ export default function Quiz() {
 
   const handleIndex = () => {
     if (index >= quiz.questions.length - 1) {
-      submitAnswers(results).then(() => navigate('/user/results'));
+      submitAnswers(results).then(() => navigate('/user/quiz/results'));
     } else {
       setIndex((prev) => prev + 1);
     }
@@ -89,7 +89,9 @@ export default function Quiz() {
 
   const addResult = (result) => {
     setResults((draft) => {
-      const index = draft.findIndex((res) => res.id == result.questionId);
+      const index = draft.findIndex(
+        (res) => res.questionId == result.questionId
+      );
 
       if (index !== -1) {
         draft[index] = result;
@@ -98,6 +100,8 @@ export default function Quiz() {
       }
     });
   };
+
+  useEffect(() => console.log(results), [results]);
 
   let content;
 

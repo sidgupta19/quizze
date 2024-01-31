@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import StatsCard from './StatsCard';
+import StatsCard from '../StatsCard';
 import Trendings from './Trendings';
 import styles from './styles/index.module.css';
 
-export default function Home() {
+export default function Dashboard() {
   const [stats, setStats] = useState({});
 
   const fetchStats = useCallback(async () => {

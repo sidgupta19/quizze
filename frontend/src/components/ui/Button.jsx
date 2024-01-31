@@ -1,7 +1,7 @@
 import styles from './styles/Button.module.css';
 
 export default function Button({
-  children = 'button',
+  children = 'Button',
   type = 'submit',
   style,
   variant,

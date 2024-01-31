@@ -42,7 +42,7 @@ export default function Trendings() {
 
     // Get the modified URL
     const modifiedUrl = url.href;
-    navigator.clipboard.writeText(`${modifiedUrl}${type}/${id}`);
+    navigator.clipboard.writeText(`${modifiedUrl}user/${type}/${id}`);
     toast.success('URL copied to clipboard');
   };
 

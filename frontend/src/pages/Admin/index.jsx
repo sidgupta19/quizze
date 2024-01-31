@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import styles from './styles/AdminLayout.module.css';
-import Naviagtion from '../../components/Naviagtion';
+import styles from './styles/index.module.css';
+import Naviagtion from './Naviagtion';
 
 export default function AdminLayout() {
   return (

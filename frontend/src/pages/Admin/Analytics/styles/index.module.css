@@ -18,3 +18,17 @@
   display: flex;
   gap: 0.5rem;
 }
+
+.modalContent p{
+}
+
+.actions {
+  margin-top: 2rem;
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+}
+
+.actions button {
+  flex: 1;
+}

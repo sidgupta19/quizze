@@ -16,6 +16,11 @@ const questionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  optionsType: {
+    type: String,
+    enum: ['text', 'image', 'textAndImage'],
+    default: 'text'
+  },
   options: {
     type: [optionSchema],
     validate: {
@@ -28,7 +33,8 @@ const questionSchema = new mongoose.Schema({
   },
   answer: {
     type: Number,
-    required: true
+    required: true,
+    default: 0
   },
   attempts: {
     type: Number,

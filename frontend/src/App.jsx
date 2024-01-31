@@ -1,13 +1,15 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import AdminLayout from './pages/Admin';
-import Auth from './pages/Auth';
-import Home from './pages/Admin/Home';
 import Analytics from './pages/Admin/Analytics';
-import CreatePage from './pages/Admin/CreatePage';
+import Dashboard from './pages/Admin/Dashboard';
+import Auth from './pages/Auth';
+import UserLayout from './pages/User';
 import Poll from './pages/User/Poll';
 import Quiz from './pages/User/Quiz';
-import UserLayout from './pages/User';
-import Results from './pages/User/Results';
+import QuizResults from './pages/User/Quiz/QuizResults';
+import PollResults from './pages/User/Poll/PollResults';
+import QuizAnalysis from './pages/Admin/QuizAnalysis';
+import PollAnalysis from './pages/Admin/PollAnalysis';
 
 const router = createBrowserRouter([
   {
@@ -17,9 +19,10 @@ const router = createBrowserRouter([
         path: 'admin',
         element: <AdminLayout />,
         children: [
-          { index: true, element: <Home /> },
+          { index: true, element: <Dashboard /> },
           { path: 'analytics', element: <Analytics /> },
-          { path: 'create', element: <CreatePage /> },
+          { path: 'poll/:pollId', element: <PollAnalysis /> },
+          { path: 'quiz/:quizId', element: <QuizAnalysis /> },
         ],
       },
       {
@@ -31,18 +34,24 @@ const router = createBrowserRouter([
         element: <UserLayout />,
         children: [
           {
-            path: 'results',
-            element: <Results />,
+            path: 'quiz',
+            children: [
+              { path: ':quizId', element: <Quiz /> },
+              { path: 'results', element: <QuizResults /> },
+            ],
           },
           {
-            path: 'poll/:pollId',
-            element: <Poll />,
-          },
-          {
-            path: 'quiz/:quizId',
-            element: <Quiz />,
+            path: 'poll',
+            children: [
+              { path: ':pollId', element: <Poll /> },
+              { path: 'results', element: <PollResults /> },
+            ],
           },
         ],
+      },
+      {
+        path: '*',
+        element: <p>Route not found</p>,
       },
     ],
   },

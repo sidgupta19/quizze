@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import trophy from '../../../assets/tropy.png';
-import styles from './styles/index.module.css'
+import styles from './styles/QuizResults.module.css';
 
-export default function Results() {
+export default function QuizResults() {
   const [score, setScore] = useState(null);
 
   useEffect(() => {

@@ -52,3 +52,14 @@
 .list p {
   margin-left: auto;
 }
+
+.actions {
+  margin-top: 3rem;
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+}
+
+.actions button {
+  flex: 1;
+}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Option from '../Option';
+import Option from './Option';
 import styles from './styles/Question.module.css';
 
 export default function Question({ question, addResult }) {

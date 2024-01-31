@@ -1,16 +1,22 @@
-import { useState } from 'react';
+import { createContext } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/QUIZZIE.png';
-import { Button } from '../components/ui';
-import CreateQuiz from '../pages/CreateQuiz';
-import Modal from './ui/Modal';
+import logo from '../../assets/QUIZZIE.png';
+import { Button } from '../../components/ui';
+import Modal from '../../components/ui/Modal';
+import useModal from '../../hooks/useModal';
+import QuizModalContent from './QuizModalContent';
 import styles from './styles/Navigation.module.css';
 
+export const ModalContext = createContext({
+  isOpen: false,
+  toggleModal: () => {},
+});
+
 export default function Naviagtion() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, toggleModal } = useModal();
 
   return (
-    <>
+    <ModalContext.Provider value={{ isOpen, toggleModal }}>
       <div className={styles.container}>
         <div className={styles.image}>
           <img src={logo} alt="logo" />
@@ -34,7 +40,7 @@ export default function Naviagtion() {
             </Button>
           </Link>
           <Button
-            onClick={() => setIsOpen((prev) => !prev)}
+            onClick={toggleModal}
             variant="ghost"
             style={{ width: '100%', fontWeight: '600', fontSize: '1.2rem' }}
           >
@@ -53,10 +59,10 @@ export default function Naviagtion() {
       </div>
 
       {isOpen && (
-        <Modal setIsOpen={setIsOpen}>
-          <CreateQuiz setIsOpen={setIsOpen} />
+        <Modal toggleModal={toggleModal}>
+          <QuizModalContent />
         </Modal>
       )}
-    </>
+    </ModalContext.Provider>
   );
 }

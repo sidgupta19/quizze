@@ -3,6 +3,8 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 1rem;
+  margin-top: 1rem;
+  flex: 1;
 }
 
 .options {
@@ -20,4 +22,9 @@
 .options label {
   display: flex;
   gap: 1rem;
+}
+
+.deleteIcon {
+  position: relative;
+  z-index: 10;
 }

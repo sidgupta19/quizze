@@ -20,6 +20,11 @@ const questionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  optionsType: {
+    type: String,
+    enum: ['text', 'image', 'textAndImage'],
+    default: 'text'
+  },
   options: {
     type: [optionSchema],
     validate: {

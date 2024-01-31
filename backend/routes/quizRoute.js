@@ -3,8 +3,9 @@ const {
   addQuiz,
   getQuiz,
   getUserQuizzes,
+  deleteQuiz,
   attemptQuiz,
-  deleteQuiz
+  updateQuiz
 } = require('../controllers/quizController');
 const { protect } = require('../controllers/authController');
 
@@ -18,7 +19,9 @@ router
 router
   .route('/:id')
   .get(getQuiz)
-  .patch(attemptQuiz)
+  .patch(protect, updateQuiz)
   .delete(protect, deleteQuiz);
+
+router.route('/attempt/:id').patch(attemptQuiz);
 
 module.exports = router;
