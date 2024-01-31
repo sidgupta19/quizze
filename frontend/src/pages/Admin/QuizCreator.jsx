@@ -16,8 +16,6 @@ import copyLink from '../../utils/copyLink';
 import styles from './styles/QuizCreator.module.css';
 
 const defaultQuiz = (name, type, actions, defaultData) => {
-  console.log('defaultData:', defaultData);
-
   if (actions === 'update') {
     return defaultData;
   }
@@ -67,7 +65,6 @@ export default function QuizCreator({
   };
 
   const handleQuestionChange = (id, val) => {
-    console.log('name change request on:', id);
     setQuiz((draft) => {
       const question = getQuestion(draft, id);
       question.question = val;
@@ -75,7 +72,6 @@ export default function QuizCreator({
   };
 
   const addQuestion = () => {
-    console.log('add Question');
     const defaultQuestion = {
       _id: uuid(),
       question: '',
@@ -92,7 +88,6 @@ export default function QuizCreator({
   };
 
   const deleteQuestion = (id, index) => {
-    console.log(id);
     setQuiz((draft) => {
       draft.questions = draft.questions.filter((q) => q._id !== id);
     });
@@ -117,7 +112,6 @@ export default function QuizCreator({
   };
 
   const handleOptionsTypeChange = (id, type) => {
-    console.log(type);
     setQuiz((draft) => {
       const question = getQuestion(draft, id);
       question.optionsType = type;
@@ -145,7 +139,6 @@ export default function QuizCreator({
   };
 
   const deleteOption = (id, index) => {
-    console.log(index);
     setQuiz((draft) => {
       const question = getQuestion(draft, id);
       question.options.splice(index, 1);
@@ -192,8 +185,6 @@ export default function QuizCreator({
     let url = import.meta.env.VITE_BACKEND_URL + resource;
 
     if (actions === 'update') {
-      console.log(quiz._id);
-
       url = import.meta.env.VITE_BACKEND_URL + resource + quiz._id;
     }
 
@@ -211,8 +202,6 @@ export default function QuizCreator({
         },
       });
 
-      console.log(res);
-
       if (!res.ok) {
         const errJSON = await res.json();
         console.log(errJSON);
@@ -224,10 +213,8 @@ export default function QuizCreator({
         setCreatedQuiz(resJson.data.quiz);
       }
 
-      console.log('success');
       toast.success('Successfully created quiz');
     } catch (error) {
-      console.log(error);
       toast.error(error.message);
     } finally {
       setIsProcessing(false);

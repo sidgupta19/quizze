@@ -48,8 +48,6 @@ export default function Poll() {
 
   const submitAnswers = useCallback(
     async (results) => {
-      console.log(results);
-
       try {
         const res = await fetch(
           import.meta.env.VITE_BACKEND_URL + 'polls/attempt/' + pollId,
@@ -83,7 +81,6 @@ export default function Poll() {
   };
 
   const addResult = (result) => {
-    console.log('addResult', result);
     setResults((draft) => {
       const index = draft.findIndex(
         (res) => res.questionId === result.questionId
@@ -96,8 +93,6 @@ export default function Poll() {
       }
     });
   };
-
-  useEffect(() => console.log(results), [results]);
 
   let content;
 

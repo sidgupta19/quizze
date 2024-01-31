@@ -101,8 +101,6 @@ export default function Quiz() {
     });
   };
 
-  useEffect(() => console.log(results), [results]);
-
   let content;
 
   if (isLoading) {
