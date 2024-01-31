@@ -1,25 +1,27 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
-import formatDate from '../../../utils/formatDate';
-import styles from './styles/index.module.css';
-import { Icon } from '@iconify/react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Icon } from '@iconify/react';
+import toast from 'react-hot-toast';
+
+import formatDate from '../../../utils/formatDate';
 import Modal from '../../../components/ui/Modal';
 import { Button } from '../../../components/ui';
 import useModal from '../../../hooks/useModal';
-import toast from 'react-hot-toast';
 import QuizCreator from '../QuizCreator';
 import { AuthContext } from '../../../store/authContext';
 import copyLink from '../../../utils/copyLink';
+import styles from './styles/index.module.css';
 
 export default function Analytics() {
   const [quizzes, setQuizzes] = useState([]);
-
-  const { isOpen: delteIsOpen, toggleModal: toggleDeletModal } = useModal();
+  const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const { isOpen: editIsOpen, toggleModal: toggleEditModal } = useModal();
+  const [quizToDelete, setQuizToDelete] = useState(null);
+  const [quizToUpdate, setQuizToUpdate] = useState(null);
 
   const navigate = useNavigate();
+  const { isOpen: editIsOpen, toggleModal: toggleEditModal } = useModal();
+  const { isOpen: delteIsOpen, toggleModal: toggleDeletModal } = useModal();
   const { user } = useContext(AuthContext);
 
   const fetchQuizes = useCallback(async () => {
@@ -47,10 +49,13 @@ export default function Analytics() {
   }, [user]);
 
   useEffect(() => {
-    fetchQuizes().then((data) => setQuizzes(data.data.docs));
+    setIsLoading(true);
+
+    fetchQuizes()
+      .then((data) => setQuizzes(data.data.docs))
+      .then(() => setIsLoading(false));
   }, [fetchQuizes]);
 
-  const [quizToDelete, setQuizToDelete] = useState(null);
   const handleDelete = (quiz) => {
     toggleDeletModal();
     setQuizToDelete(quiz);
@@ -93,55 +98,64 @@ export default function Analytics() {
     }
   };
 
-  const [quizToUpdate, setQuizToUpdate] = useState(null);
-
   const handleUpdate = (el) => {
     setQuizToUpdate(el);
     toggleEditModal();
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <h1>Quiz Analysis</h1>
 
-      <table className={styles.table}>
-        <tr>
-          <th>S.No</th>
-          <th>Quiz name</th>
-          <th>Created on</th>
-          <th>Impression</th>
-          <th></th>
-          <th></th>
-        </tr>
-
-        {quizzes?.map((el, index) => (
-          <tr key={el._id}>
-            <td>{index + 1}</td>
-            <td>{el.name}</td>
-            <td>{formatDate(el.createdAt)}</td>
-            <td>{el.impressions}</td>
-            <td className={styles.icons}>
-              <Icon
-                onClick={() => handleUpdate(el)}
-                icon="mingcute:edit-line"
-              />
-              <Icon
-                onClick={() => handleDelete(el)}
-                icon="mingcute:delete-2-line"
-              />
-              <Icon
-                onClick={() => copyLink(el._id, el.category)}
-                icon="mingcute:share-2-line"
-              />
-            </td>
-            <td>
-              <Link to={`/${el.category}/${el._id}`}>
-                Question with analysis
-              </Link>
-            </td>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : quizzes.length > 0 ? (
+        <table className={styles.table}>
+          <tr>
+            <th>S.No</th>
+            <th>Quiz name</th>
+            <th>Created on</th>
+            <th>Impression</th>
+            <th></th>
+            <th></th>
           </tr>
-        ))}
-      </table>
+
+          {quizzes?.map((el, index) => (
+            <tr key={el._id}>
+              <td>{index + 1}</td>
+              <td>{el.name}</td>
+              <td>{formatDate(el.createdAt)}</td>
+              <td>{el.impressions}</td>
+              <td className={styles.icons}>
+                <Icon
+                  onClick={() => handleUpdate(el)}
+                  icon="mingcute:edit-line"
+                  color={'#854cff'}
+                />
+                <Icon
+                  onClick={() => handleDelete(el)}
+                  icon="mingcute:delete-2-line"
+                  color="red"
+                />
+                <Icon
+                  onClick={() => copyLink(el._id, el.category)}
+                  icon="mingcute:share-2-line"
+                  color="green"
+                />
+              </td>
+              <td>
+                <Link to={`/${el.category}/${el._id}`}>
+                  Question with analysis
+                </Link>
+              </td>
+            </tr>
+          ))}
+        </table>
+      ) : (
+        <div className={styles.noData}>
+          <p>You do not have any quizzes</p>
+        </div>
+      )}
 
       {delteIsOpen && (
         <Modal toggleModal={toggleDeletModal}>

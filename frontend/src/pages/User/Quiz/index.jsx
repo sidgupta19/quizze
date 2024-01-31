@@ -4,8 +4,8 @@ import { useImmer } from 'use-immer';
 
 import { Button } from '../../../components/ui';
 import Question from '../Question';
-import styles from './styles/index.module.css';
 import Timer from '../Timer';
+import styles from './styles/index.module.css';
 
 export default function Quiz() {
   const { quizId } = useParams();

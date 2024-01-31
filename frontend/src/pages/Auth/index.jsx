@@ -1,5 +1,6 @@
 import { Tab } from '@headlessui/react';
 import { Toaster } from 'react-hot-toast';
+
 import logo from '../../assets/QUIZZIE.png';
 import { Button } from '../../components/ui';
 import LoginForm from './LoginForm';

@@ -34,7 +34,7 @@
 }
 
 .error {
-  color: var(--error);
+  color: var(--error-color);
   margin-top: 0.25rem;
 }
 

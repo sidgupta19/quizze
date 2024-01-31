@@ -61,7 +61,7 @@ exports.getUsersPollsAndQuizzes = catchAsync(async (req, res, next) => {
   const polls = await Poll.find({ createdBy: req.user.id });
 
   const docs = [...quizzes, ...polls].sort(
-    (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
 
   res.status(200).json({

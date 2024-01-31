@@ -1,12 +1,13 @@
-import { Button, FormInput } from '../../components/ui';
-import styles from './styles/LoginForm.module.css';
+import { useContext } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import * as yup from 'yup';
+
+import { Button, FormInput } from '../../components/ui';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
 import { AuthContext } from '../../store/authContext';
+import styles from './styles/LoginForm.module.css';
 
 const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 

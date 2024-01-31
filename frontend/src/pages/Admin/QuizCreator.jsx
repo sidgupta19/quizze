@@ -1,18 +1,19 @@
+import { useCallback, useContext, useState } from 'react';
 import { Tab } from '@headlessui/react';
 import { Plus, X } from 'lucide-react';
-import { useCallback, useContext, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useImmer } from 'use-immer';
 import { v4 as uuid } from 'uuid';
+
 import { Button } from '../../components/ui';
 import { AuthContext } from '../../store/authContext';
 import { ModalContext } from './Naviagtion';
 import Options from './Options';
 import QuestionCreator from './QuestionCreator';
 import Timer from './Timer';
-import styles from './styles/QuizCreator.module.css';
 import copyLink from '../../utils/copyLink';
+import styles from './styles/QuizCreator.module.css';
 
 const defaultQuiz = (name, type, actions, defaultData) => {
   console.log('defaultData:', defaultData);
@@ -116,6 +117,7 @@ export default function QuizCreator({
   };
 
   const handleOptionsTypeChange = (id, type) => {
+    console.log(type);
     setQuiz((draft) => {
       const question = getQuestion(draft, id);
       question.optionsType = type;
@@ -246,6 +248,14 @@ export default function QuizCreator({
     return `${modifiedUrl}user/${type}/${id}`;
   };
 
+  const handleToggle = () => {
+    if (actions == 'update') {
+      toggleEditModal();
+    } else {
+      toggleModal();
+    }
+  };
+
   return (
     <div>
       {showResult && createdQuiz ? (
@@ -325,7 +335,7 @@ export default function QuizCreator({
           </Tab.Group>
 
           <div className={styles.actions}>
-            <Button onClick={toggleModal}>Cancel</Button>
+            <Button onClick={handleToggle}>Cancel</Button>
             <Button variant="primary" onClick={createOrUpdateQuiz}>
               {actions === 'update'
                 ? isProcessing

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import trophy from '../../../assets/tropy.png';
 import styles from './styles/QuizResults.module.css';
 

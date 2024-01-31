@@ -1,6 +1,7 @@
-import { useParams } from 'react-router-dom';
-import styles from './styles/index.module.css';
 import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
+import styles from './styles/index.module.css';
 import formatDate from '../../../utils/formatDate';
 import StatsCard from '../StatsCard';
 

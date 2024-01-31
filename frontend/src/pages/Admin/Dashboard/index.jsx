@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
+
 import { AuthContext } from '../../../store/authContext';
 import StatsCard from '../StatsCard';
 import Trendings from './Trendings';

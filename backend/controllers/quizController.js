@@ -75,8 +75,6 @@ exports.attemptQuiz = catchAsync(async (req, res, next) => {
     return next(new AppError('Please provide results'));
   }
 
-  console.log(results);
-
   const { id } = req.params;
   const quiz = await Quiz.findById(id);
 

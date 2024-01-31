@@ -1,12 +1,13 @@
 import { createContext, useContext } from 'react';
 import { Link } from 'react-router-dom';
+
+import useModal from '../../hooks/useModal';
 import logo from '../../assets/QUIZZIE.png';
 import { Button } from '../../components/ui';
 import Modal from '../../components/ui/Modal';
-import useModal from '../../hooks/useModal';
 import QuizModalContent from './QuizModalContent';
-import styles from './styles/Navigation.module.css';
 import { AuthContext } from '../../store/authContext';
+import styles from './styles/Navigation.module.css';
 
 export const ModalContext = createContext({
   isOpen: false,
@@ -28,7 +29,7 @@ export default function Naviagtion() {
           <Link to="/">
             <Button
               variant="ghost"
-              style={{ width: '100%', fontWeight: '600', fontSize: '1.2rem' }}
+              style={{ width: '100%', fontWeight: '400', fontSize: '1.2rem' }}
             >
               Dashboard
             </Button>
@@ -36,7 +37,7 @@ export default function Naviagtion() {
           <Link to="/analytics">
             <Button
               variant="ghost"
-              style={{ width: '100%', fontWeight: '600', fontSize: '1.2rem' }}
+              style={{ width: '100%', fontWeight: '400', fontSize: '1.2rem' }}
             >
               Analytics
             </Button>
@@ -44,7 +45,7 @@ export default function Naviagtion() {
           <Button
             onClick={toggleModal}
             variant="ghost"
-            style={{ width: '100%', fontWeight: '600', fontSize: '1.2rem' }}
+            style={{ width: '100%', fontWeight: '400', fontSize: '1.2rem' }}
           >
             Create Quiz
           </Button>
@@ -55,7 +56,7 @@ export default function Naviagtion() {
             <Button
               onClick={logout}
               variant="ghost"
-              style={{ width: '100%', fontWeight: '600', fontSize: '1.2rem' }}
+              style={{ width: '100%', fontWeight: '400', fontSize: '1.2rem' }}
             >
               LOGOUT
             </Button>

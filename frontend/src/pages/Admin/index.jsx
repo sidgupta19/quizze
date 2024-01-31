@@ -1,9 +1,10 @@
-import { Toaster } from 'react-hot-toast';
-import { Outlet, useNavigate } from 'react-router-dom';
-import Naviagtion from './Naviagtion';
-import styles from './styles/index.module.css';
 import { useContext, useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+
+import Naviagtion from './Naviagtion';
 import { AuthContext } from '../../store/authContext';
+import styles from './styles/index.module.css';
 
 export default function AdminLayout() {
   const { user, isLoading } = useContext(AuthContext);

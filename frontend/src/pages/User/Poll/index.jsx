@@ -4,8 +4,8 @@ import { useImmer } from 'use-immer';
 
 import { Button } from '../../../components/ui';
 import Question from '../Question';
-import styles from './styles/index.module.css';
 import Timer from '../Timer';
+import styles from './styles/index.module.css';
 
 export default function Poll() {
   const { pollId } = useParams();
@@ -52,7 +52,7 @@ export default function Poll() {
 
       try {
         const res = await fetch(
-          import.meta.env.VITE_BACKEND_URL + 'polls/' + pollId,
+          import.meta.env.VITE_BACKEND_URL + 'polls/attempt/' + pollId,
           {
             method: 'PATCH',
             body: JSON.stringify({ results }),

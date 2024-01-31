@@ -1,11 +1,11 @@
+import { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import toast from 'react-hot-toast';
 
 import { Button, FormInput } from '../../components/ui';
 import styles from './styles/SignupForm.module.css';
-import toast from 'react-hot-toast';
-import { useEffect, useState } from 'react';
 
 const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 

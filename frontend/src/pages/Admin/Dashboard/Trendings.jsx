@@ -1,5 +1,6 @@
-import { Icon } from '@iconify/react';
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { Icon } from '@iconify/react';
+
 import { AuthContext } from '../../../store/authContext';
 import copyLink from '../../../utils/copyLink';
 import formatDate from '../../../utils/formatDate';

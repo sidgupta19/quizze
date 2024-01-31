@@ -28,15 +28,16 @@
 .card > div {
   display: flex;
   justify-content: space-between;
-  align-items: start;
+  align-items: center;
 }
 
 .name {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 600;
+  width: 10ch;
+  overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
-  line-clamp: 2;
-  -webkit-line-clamp: 2;
 }
 
 .impressions {

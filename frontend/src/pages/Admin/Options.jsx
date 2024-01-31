@@ -10,6 +10,7 @@ export default function Options({
   handleOptionChange,
   actions,
 }) {
+  console.log(question);
   return (
     <div className={styles.optionsGroup}>
       <div className={styles.options}>

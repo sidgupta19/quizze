@@ -19,7 +19,7 @@ const questionSchema = new mongoose.Schema({
   optionsType: {
     type: String,
     enum: ['text', 'image', 'textAndImage'],
-    default: 'text'
+    required: true
   },
   options: {
     type: [optionSchema],
