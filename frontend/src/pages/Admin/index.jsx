@@ -31,14 +31,16 @@ export default function AdminLayout() {
       {isLoading ? (
         <h1>Loading...</h1>
       ) : (
-        <div className={styles.main}>
-          <div className={styles.navigation}>
-            <Naviagtion />
+        user && (
+          <div className={styles.main}>
+            <div className={styles.navigation}>
+              <Naviagtion />
+            </div>
+            <div className={styles.outlet}>
+              <Outlet />
+            </div>
           </div>
-          <div className={styles.outlet}>
-            <Outlet />
-          </div>
-        </div>
+        )
       )}
     </>
   );

@@ -28,7 +28,7 @@ export default function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       email: '',
@@ -76,7 +76,9 @@ export default function LoginForm() {
         register={register}
         type="password"
       />
-      <Button variant="secondary">Submit</Button>
+      <Button variant="secondary">
+        {isSubmitting ? 'Logging in...' : 'Log in'}
+      </Button>
     </form>
   );
 }

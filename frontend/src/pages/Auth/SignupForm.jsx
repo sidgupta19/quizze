@@ -39,7 +39,7 @@ export default function SignupForm() {
     handleSubmit,
     setError,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues,
     resolver: yupResolver(userSchema),
@@ -114,7 +114,9 @@ export default function SignupForm() {
         type="password"
       />
 
-      <Button variant="secondary">Submit</Button>
+      <Button variant="secondary">
+        {isSubmitting ? 'Signing up...' : 'Sign up'}
+      </Button>
     </form>
   );
 }

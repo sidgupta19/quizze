@@ -6,8 +6,20 @@ import { Button } from '../../components/ui';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 import styles from './styles/index.module.css';
+import { useContext, useEffect } from 'react';
+import { AuthContext } from '../../store/authContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function Auth() {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/admin');
+    }
+  }, [user, navigate]);
+
   return (
     <div className={styles.container}>
       <Toaster
