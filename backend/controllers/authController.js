@@ -54,20 +54,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   const token = req.headers.authorization.split(' ')[1];
-
-  let decoded;
-
-  try {
-    decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  } catch (error) {
-    return next(
-      new AppError(
-        'Token is not valid, or has expired. Login to get the token.',
-        401
-      )
-    );
-  }
-
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   const user = await User.findOne({ _id: decoded.id });
 
   if (!user) {

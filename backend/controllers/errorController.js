@@ -72,6 +72,13 @@ module.exports = (err, req, res, next) => {
       error = new AppError('Not found', 404);
     }
 
+    if (error.name === 'TokenExpiredError') {
+      error = new AppError(
+        'Token is not valid, or has expired. Login to get the token.',
+        401
+      );
+    }
+
     return sendProdError(error, res);
   }
 
